@@ -19,6 +19,7 @@
         <module>mall-monitor</module>
         <module>mall-gateway</module>
         <module>mall-auth</module>
+        <module>mall-test</module>
     </modules>
 
     <parent>
@@ -32,7 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
-        <docker.host>http://192.168.3.101:2375</docker.host>
+        <docker.host>http://172.16.8.134:2375</docker.host>
         <docker.maven.plugin.version>1.2.2</docker.maven.plugin.version>
         <java.version>1.8</java.version>
         <spring-cloud.version>Hoxton.SR5</spring-cloud.version>
@@ -224,19 +225,35 @@
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${docker.maven.plugin.version}</version>
-                    <!--<executions>-->
-                        <!--<execution>-->
-                            <!--<id>build-image</id>-->
-                            <!--<phase>package</phase>-->
-                            <!--<goals>-->
-                                <!--<goal>build</goal>-->
-                            <!--</goals>-->
-                        <!--</execution>-->
-                    <!--</executions>-->
+                    <executions>
+                        <execution>
+                            <id>build-image</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                     <configuration>
                         <imageName>mall/${project.artifactId}:${project.version}</imageName>
+                        <maintainer>luyuanx2</maintainer>
                         <dockerHost>${docker.host}</dockerHost>
                         <baseImage>java:8</baseImage>
+                        <workdir>/root</workdir>
+
+                        <env>
+                            <arms_licenseKey>10000@d1f202e070bddb8</arms_licenseKey>
+                            <arms_appName>${project.build.finalName}</arms_appName>
+                            <JAVA_TOOL_OPTIONS>${JAVA_TOOL_OPTIONS} '-javaagent:/root/ArmsAgent/arms-bootstrap-1.7.0-SNAPSHOT.jar -Darms.licenseKey=10000@d1f202e070bddb8 -Darms.appName=${project.artifactId}'</JAVA_TOOL_OPTIONS>
+                        </env>
+
+                        <runs>
+                            <run>wget "https://dtsre-prod.oss-cn-hangzhou.aliyuncs.com/Agent/ArmsAgent.zip" -O ArmsAgent.zip</run>
+                            <run>unzip ArmsAgent.zip -d /root/</run>
+                            <run>sed -i "s#profiler.collector.ip=127.0.0.1#profiler.collector.ip=172.16.8.60#g" /root/ArmsAgent/arms-agent.config</run>
+                            <run>env | grep JAVA_TOOL_OPTIONS</run>
+                        </runs>
+
                         <entryPoint>["java", "-jar", "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]</entryPoint>
                         <resources>
                             <resource>

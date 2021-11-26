@@ -1,5 +1,22 @@
 version: '3'
 services:
+  mall-demo:
+    image: mall/mall-demo:1.0-SNAPSHOT
+    container_name: mall-demo
+    external_links:
+      - mall-gateway:mall-gateway
+      - mall-search:mall-search
+      - mall-portal:mall-portal
+      - mall-auth:mall-auth
+      - nacos-registry:nacos-registry
+      - elasticsearch:es
+      - mysql:db
+      - redis:redis
+  mall-test:
+    image: mall/mall-test:1.0-SNAPSHOT
+    container_name: mall-admin
+    external_links:
+      - mall-gateway:mall-gateway
   mall-admin:
     image: mall/mall-admin:1.0-SNAPSHOT
     container_name: mall-admin

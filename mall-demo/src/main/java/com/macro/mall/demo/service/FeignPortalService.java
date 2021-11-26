@@ -17,4 +17,7 @@ public interface FeignPortalService {
 
     @GetMapping("/cart/list")
     CommonResult list();
+
+    @GetMapping("/home/content")
+    CommonResult home();
 }

@@ -27,4 +27,10 @@ public class FeignPortalController {
     public CommonResult cartList() {
         return portalService.list();
     }
+
+
+    @GetMapping("/home")
+    public CommonResult home() {
+        return portalService.home();
+    }
 }

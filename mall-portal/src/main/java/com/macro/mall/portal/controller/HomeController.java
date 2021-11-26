@@ -33,6 +33,24 @@ public class HomeController {
         return CommonResult.success(contentResult);
     }
 
+    @ApiOperation("异常")
+    @RequestMapping(value = "/execp", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<HomeContentResult> content(String nl) {
+        nl.equals("aaaa");
+        return CommonResult.success(null);
+    }
+
+
+    @ApiOperation("超时")
+    @RequestMapping(value = "/timeout", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<HomeContentResult> timeout() throws InterruptedException {
+        Thread.sleep(60000);
+        return CommonResult.success(null);
+    }
+
+
     @ApiOperation("分页获取推荐商品")
     @RequestMapping(value = "/recommendProductList", method = RequestMethod.GET)
     @ResponseBody
